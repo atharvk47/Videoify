@@ -5,16 +5,23 @@ import HomeCard from "./HomeCard"; //creating reusable car, we use it four times
 import { useRouter } from "next/navigation";
 import MeetingModal from "./MeetingModal";
 import { useUser } from "@clerk/nextjs";
-import { useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { error } from "console";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<
     "isScheduleMeeting" | "isInstantMeeting" | "isJoiningMeeting" | undefined
   >();
   const router = useRouter(); //??????????????????????????????????????
-
+  const initialValues = {
+    dateTime: new Date(),
+    description: "",
+    link: "",
+  };
   const { user } = useUser();
   const client = useStreamVideoClient();
+  const [values, setValues] = useState(initialValues);
+  const [callDetail, setCallDetail] = useState<Call>();
 
   const createMeeting = async () => {
     if (!client || !user) return;
@@ -22,6 +29,24 @@ const MeetingTypeList = () => {
     try {
       const id = crypto.randomUUID();
       const call = client.call("default", id);
+
+      if (!call) throw new Error("Failed to create call!");
+
+      const startsAt =
+        values.dateTime.toISOString() || new Date(Date.now()).toISOString();
+      const description = values.description || "Instant Meeting";
+      await call.getOrCreate({
+        data: {
+          starts_at: startsAt,
+          custom: {
+            description,
+          },
+        },
+      });
+      setCallDetail(call);
+      if (!values.description) {
+        router.push(`/meeting/${call.id}`);
+      }
     } catch (error) {
       console.log(error);
     }
