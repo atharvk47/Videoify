@@ -10,7 +10,7 @@ import { error } from "console";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<
-    "isScheduleMeeting" | "isInstantMeeting" | "isJoiningMeeting" | undefined
+    "isScheduleMeeting" | "isInstantMeeting" | "isJoiningMeeting" | undefined // useState here is used to specify the state of the meeting
   >();
   const router = useRouter(); //??????????????????????????????????????
   const initialValues = {
