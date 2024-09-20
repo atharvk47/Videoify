@@ -27,6 +27,7 @@ export const sidebarLinks = [
 ];
 
 export const avatarImages = [
+  // used for avatars in the meetings
   "/images/avatar-1.jpeg",
   "/images/avatar-2.jpeg",
   "/images/avatar-3.png",
